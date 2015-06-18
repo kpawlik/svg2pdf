@@ -22,6 +22,7 @@ var (
 	dir         string
 	lineW       float64
 	scale       float64
+	timing      bool
 )
 
 func init() {
@@ -31,6 +32,7 @@ func init() {
 	flag.StringVar(&dir, "dir", "", "directory wiith SVG files")
 	flag.Float64Var(&lineW, "linew", 0, "line width")
 	flag.Float64Var(&scale, "scale", ScaleFactor, "Scale")
+	flag.BoolVar(&timing, "time", false, "Print convert time")
 
 }
 
@@ -56,7 +58,7 @@ func svg(format, orientation string, lineW float64, scale float64, files []strin
 		writeSvg(file, scale, pdf)
 		pdf.EndLayer()
 	}
-	pdf.OpenLayerPane()
+	//pdf.OpenLayerPane()
 	if err := pdf.OutputFileAndClose(out); err != nil {
 		fmt.Printf("Error generating PDF: %v\n", err)
 	}
@@ -79,7 +81,9 @@ func writeSvg(file string, scale float64, pdf *gofpdf.Fpdf) (err error) {
 	t3 := time.Now()
 	pdf.SVGWriteTexts(&sig, scale)
 	t4 := time.Now()
-	fmt.Printf("Parse: %v\nWrite geoms: %v\nWrite texts: %v\n", t2.Sub(t1), t3.Sub(t2), t4.Sub(t3))
+	if timing {
+		fmt.Printf("Parse: %v\nWrite geoms: %v\nWrite texts: %v\n", t2.Sub(t1), t3.Sub(t2), t4.Sub(t3))
+	}
 	return
 }
 
@@ -114,5 +118,7 @@ func main() {
 	orientation = strings.ToUpper(orientation)
 	format = strings.ToUpper(format)
 	svg(format, orientation, lineW, scale, files)
-	fmt.Printf("Total time: %v\n", time.Now().Sub(t))
+	if timing {
+		fmt.Printf("Total time: %v\n", time.Now().Sub(t))
+	}
 }
