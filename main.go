@@ -108,7 +108,6 @@ func main() {
 	t := time.Now()
 	flag.Parse()
 	if flag.NArg() == 0 && len(dir) == 0 {
-		fmt.Printf("App uasage:\n\tpdfl.exe -f=A3|A4|A5 -o=P|L file1.svg file2.svg ...\n\nParams:\n")
 		flag.PrintDefaults()
 		return
 	}
